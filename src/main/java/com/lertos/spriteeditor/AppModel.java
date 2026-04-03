@@ -14,8 +14,10 @@ import java.util.Map;
 
 public class AppModel {
 
+    private static final int DEFAULT_CELL_SIZE = 16;
+
     private final ObjectProperty<Image> spritesheet = new SimpleObjectProperty<>();
-    private final IntegerProperty cellSize = new SimpleIntegerProperty(32);
+    private final IntegerProperty cellSize = new SimpleIntegerProperty(DEFAULT_CELL_SIZE);
     private final ObservableList<Category> categories = FXCollections.observableArrayList();
     private final ObjectProperty<Category> selectedCategory = new SimpleObjectProperty<>();
 
@@ -74,10 +76,6 @@ public class AppModel {
         }
     }
 
-    public Category getCellCategory(int col, int row) {
-        return cellAssignments.get(new CellKey(col, row));
-    }
-
     public void clearAllAssignments() {
         cellAssignments.clear();
     }
@@ -95,8 +93,8 @@ public class AppModel {
     public record CellKey(int col, int row) {}
 
     public static class Category {
-        private String name;
-        private Color color;
+        private final String name;
+        private final Color color;
 
         public Category(String name, Color color) {
             this.name = name;
@@ -107,16 +105,8 @@ public class AppModel {
             return name;
         }
 
-        public void setName(String name) {
-            this.name = name;
-        }
-
         public Color getColor() {
             return color;
-        }
-
-        public void setColor(Color color) {
-            this.color = color;
         }
 
         @Override
