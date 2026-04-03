@@ -127,9 +127,7 @@ public class EditorTab {
 
         categoryPanel.setFillWidth(true);
 
-        model.getCategories().addListener((ListChangeListener<AppModel.Category>) c -> {
-            rebuildCategoryList();
-        });
+        model.getCategories().addListener((ListChangeListener<AppModel.Category>) c -> rebuildCategoryList());
 
         ScrollPane catScroll = new ScrollPane(categoryPanel);
         catScroll.setFitToWidth(true);
@@ -245,13 +243,7 @@ public class EditorTab {
     }
 
     private Color generateNextColor() {
-        Color[] palette = {
-                Color.web("#e74c3c"), Color.web("#3498db"), Color.web("#2ecc71"),
-                Color.web("#f39c12"), Color.web("#9b59b6"), Color.web("#1abc9c"),
-                Color.web("#e67e22"), Color.web("#e91e63"), Color.web("#00bcd4"),
-                Color.web("#8bc34a")
-        };
-        return palette[model.getCategories().size() % palette.length];
+        return Color.color(Math.random(), Math.random(), Math.random());
     }
 
     private void loadSpritesheet() {
