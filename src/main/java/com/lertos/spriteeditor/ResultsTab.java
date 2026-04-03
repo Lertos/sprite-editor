@@ -22,6 +22,8 @@ import java.util.Map;
 
 public class ResultsTab {
 
+    final double ZOOM_SCALE_DELTA = 1.1;
+
     private final AppModel model;
     private final BorderPane root;
     private final VBox categoriesContainer;
@@ -151,6 +153,15 @@ public class ResultsTab {
         imgScroll.setFitToHeight(false);
         imgScroll.setStyle("-fx-background-color: #1e1e1e; -fx-background: #1e1e1e;");
         imgScroll.setPrefHeight(Math.min(imgH * scale + 30, maxHeight + 30));
+
+        imgScroll.setOnScroll(event -> {
+            if (event.isControlDown()) { // Zoom on Ctrl + Scroll
+                double zoomFactor = event.getDeltaY() > 0 ? ZOOM_SCALE_DELTA : 1 / ZOOM_SCALE_DELTA;
+                imageView.setScaleX(imageView.getScaleX() * zoomFactor);
+                imageView.setScaleY(imageView.getScaleY() * zoomFactor);
+                event.consume(); // Prevent the ScrollPane from scrolling while zooming
+            }
+        });
 
         section.getChildren().addAll(header, imgScroll);
         return section;
