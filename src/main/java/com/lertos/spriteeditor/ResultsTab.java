@@ -159,8 +159,24 @@ public class ResultsTab {
                 double zoomFactor = event.getDeltaY() > 0 ? ZOOM_SCALE_DELTA : 1 / ZOOM_SCALE_DELTA;
                 imageView.setScaleX(imageView.getScaleX() * zoomFactor);
                 imageView.setScaleY(imageView.getScaleY() * zoomFactor);
+
+                //TODO: When zooming in, find new "preview" cell size. Apply the factor to cell size. Then recalc the
+                // new image scroll height and expand it
+
                 event.consume(); // Prevent the ScrollPane from scrolling while zooming
             }
+        });
+
+        final double[] offset = new double[2];
+
+        imageView.setOnMousePressed(event -> {
+            offset[0] = event.getSceneX() - imageView.getTranslateX();
+            offset[1] = event.getSceneY() - imageView.getTranslateY();
+        });
+
+        imageView.setOnMouseDragged(event -> {
+            imageView.setTranslateX(event.getSceneX() - offset[0]);
+            imageView.setTranslateY(event.getSceneY() - offset[1]);
         });
 
         section.getChildren().addAll(header, imgScroll);
