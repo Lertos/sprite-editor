@@ -128,10 +128,13 @@ public class ResultsTab {
 
         header.getChildren().addAll(swatch, catName, cellCount, spacer, saveBtn);
 
-        Image preview = buildCategoryImage(cat, cells);
+        Image preview = buildCategoryImage(cells);
         ImageView imageView = new ImageView(preview);
         imageView.setPreserveRatio(true);
 
+        //TODO: Need to come up with some way to approximate what these would be.
+        // Height could be dynamic based on cell size * max cols
+        // Width could be dynamic based on starting/current screen size OR the size of the current tab/pane
         double maxWidth = 900;
         double maxHeight = 500;
         double imgW = preview.getWidth();
@@ -153,36 +156,29 @@ public class ResultsTab {
         return section;
     }
 
-    private Image buildCategoryImage(AppModel.Category cat, List<AppModel.CellKey> cells) {
-        Image spritesheet = model.getSpritesheet();
+    private Image buildCategoryImage(List<AppModel.CellKey> cells) {
+        Image spriteSheet = model.getSpritesheet();
         int cellSize = model.getCellSize();
-        int width = (int) spritesheet.getWidth();
-        int height = (int) spritesheet.getHeight();
+
+        int width = cells.size() * cellSize;
+        //TODO: Figure out max height/cols then add to the current Y to go to next row
+        int height = cellSize;
 
         Canvas canvas = new Canvas(width, height);
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
-        gc.drawImage(spritesheet, 0, 0);
-
-        Color c = cat.getColor();
-        gc.setFill(Color.color(c.getRed(), c.getGreen(), c.getBlue(), 0.45));
-        gc.setStroke(Color.color(c.getRed(), c.getGreen(), c.getBlue(), 0.9));
-        gc.setLineWidth(1.5);
+        int currentX = 0;
+        int currentY = 0;
 
         for (AppModel.CellKey key : cells) {
-            double x = key.col() * cellSize;
-            double y = key.row() * cellSize;
-            gc.fillRect(x, y, cellSize, cellSize);
-            gc.strokeRect(x + 0.75, y + 0.75, cellSize - 1.5, cellSize - 1.5);
-        }
+            double cropStartPosX = key.col() * cellSize;
+            double cropStartPosY = key.row() * cellSize;
 
-        gc.setStroke(Color.color(1, 1, 1, 0.4));
-        gc.setLineWidth(0.5);
-        for (double x = 0; x <= width; x += cellSize) {
-            gc.strokeLine(x, 0, x, height);
-        }
-        for (double y = 0; y <= height; y += cellSize) {
-            gc.strokeLine(0, y, width, y);
+            gc.drawImage(spriteSheet, cropStartPosX, cropStartPosY, cellSize, cellSize, currentX, currentY, cellSize, cellSize);
+
+            currentX += cellSize;
+            //TODO: Figure out max height/cols then add to the current Y to go to next row
+            //currentY += cellSize;
         }
 
         javafx.scene.SnapshotParameters params = new javafx.scene.SnapshotParameters();
@@ -200,7 +196,7 @@ public class ResultsTab {
         if (file == null) return;
 
         try {
-            Image image = buildCategoryImage(cat, cells);
+            Image image = buildCategoryImage(cells);
             BufferedImage bufferedImage = SwingFXUtils.fromFXImage(image, null);
 
             if (!file.getName().toLowerCase().endsWith(".png")) {
