@@ -64,7 +64,7 @@ public class EditorTab {
         HBox row1 = new HBox(12);
         row1.setAlignment(Pos.CENTER_LEFT);
 
-        Button loadBtn = new Button("Load Spritesheet...");
+        Button loadBtn = new Button("Load Sprite Sheet");
         loadBtn.setStyle("-fx-background-color: #5a7fc4; -fx-text-fill: white; -fx-font-weight: bold;");
         loadBtn.setOnAction(e -> loadSpritesheet());
 
@@ -127,7 +127,7 @@ public class EditorTab {
         Label title = new Label("Categories");
         title.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: #eeeeee;");
 
-        Button addCatBtn = new Button("+ Add Category");
+        Button addCatBtn = new Button("Add Category");
         addCatBtn.setMaxWidth(Double.MAX_VALUE);
         addCatBtn.setStyle("-fx-background-color: #4a7a4a; -fx-text-fill: white; -fx-font-weight: bold;");
         addCatBtn.setOnAction(e -> showAddCategoryDialog());

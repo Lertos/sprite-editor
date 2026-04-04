@@ -128,7 +128,7 @@ public class ResultsTab {
         HBox spacer = new HBox();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        Button saveBtn = new Button("Save Image...");
+        Button saveBtn = new Button("Save Image");
         saveBtn.setStyle("-fx-background-color: #5a7fc4; -fx-text-fill: white; -fx-font-weight: bold;");
         saveBtn.setOnAction(e -> saveImage(cat, cells));
 
