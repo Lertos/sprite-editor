@@ -137,6 +137,7 @@ public class ResultsTab {
         Image preview = buildCategoryImage(cells);
         ImageView imageView = new ImageView(preview);
         imageView.setPreserveRatio(true);
+        imageView.setSmooth(false); // Disables anti-aliasing
 
         ScrollPane imgScroll = new ScrollPane(imageView);
         imgScroll.setFitToWidth(false);
@@ -191,6 +192,8 @@ public class ResultsTab {
 
         Canvas canvas = new Canvas(width, height);
         GraphicsContext gc = canvas.getGraphicsContext2D();
+
+        gc.setImageSmoothing(false);
 
         int currentX = 0;
         int currentY = 0;
