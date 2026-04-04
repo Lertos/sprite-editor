@@ -17,6 +17,7 @@ import java.util.Optional;
 
 public class EditorTab {
 
+    private static final String INITIAL_DIR_FILE_PATH = "C:\\Users\\Dylan\\Downloads";
     private final AppModel model;
     private final BorderPane root;
     private final SpritesheetCanvas canvas;
@@ -29,6 +30,12 @@ public class EditorTab {
         this.categoryPanel = new VBox(8);
 
         buildUI();
+
+        // TODO: Removes the step of having to create a new category every time. Remove after testing
+        AppModel.Category testCat = new AppModel.Category("test", Color.web("#b31010"));
+
+        model.getCategories().add(testCat);
+        model.setSelectedCategory(testCat);
     }
 
     private void buildUI() {
@@ -248,10 +255,18 @@ public class EditorTab {
 
     private void loadSpritesheet() {
         FileChooser fc = new FileChooser();
-        fc.setTitle("Open Spritesheet");
+        //TODO: Need to either save this in some config/user data file so after they choose it once it will continue to use it
+        File initialDir = new File(INITIAL_DIR_FILE_PATH);
+
+        if (initialDir.exists() && initialDir.isDirectory()) {
+            fc.setInitialDirectory(initialDir);
+        }
+
+        fc.setTitle("Open Sprite Sheet");
+
         fc.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.bmp", "*.gif"),
-                new FileChooser.ExtensionFilter("All Files", "*.*")
+            new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.bmp", "*.gif"),
+            new FileChooser.ExtensionFilter("All Files", "*.*")
         );
 
         File file = fc.showOpenDialog(root.getScene().getWindow());
