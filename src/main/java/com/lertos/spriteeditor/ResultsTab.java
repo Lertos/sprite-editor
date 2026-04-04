@@ -101,6 +101,10 @@ public class ResultsTab {
         return cells;
     }
 
+    private double roundToTwoDecimals(double val) {
+        return Math.round(val * 10.0) / 10.0;
+    }
+
     private Node buildCategorySection(AppModel.Category cat, List<AppModel.CellKey> cells) {
         VBox section = new VBox(10);
         section.setStyle("-fx-background-color: #383838; -fx-background-radius: 8; -fx-border-color: #555; -fx-border-radius: 8; -fx-border-width: 1;");
@@ -134,34 +138,28 @@ public class ResultsTab {
         ImageView imageView = new ImageView(preview);
         imageView.setPreserveRatio(true);
 
-        //TODO: Need to come up with some way to approximate what these would be.
-        // Height could be dynamic based on cell size * max cols
-        // Width could be dynamic based on starting/current screen size OR the size of the current tab/pane
-        double maxWidth = 900;
-        double maxHeight = 500;
-        double imgW = preview.getWidth();
-        double imgH = preview.getHeight();
-
-        double scale = Math.min(maxWidth / imgW, maxHeight / imgH);
-        if (scale > 1.0) scale = 1.0;
-
-        imageView.setFitWidth(imgW * scale);
-        imageView.setFitHeight(imgH * scale);
-
         ScrollPane imgScroll = new ScrollPane(imageView);
         imgScroll.setFitToWidth(false);
         imgScroll.setFitToHeight(false);
         imgScroll.setStyle("-fx-background-color: #1e1e1e; -fx-background: #1e1e1e;");
-        imgScroll.setPrefHeight(Math.min(imgH * scale + 30, maxHeight + 30));
 
         imgScroll.setOnScroll(event -> {
             if (event.isControlDown()) { // Zoom on Ctrl + Scroll
                 double zoomFactor = event.getDeltaY() > 0 ? ZOOM_SCALE_DELTA : 1 / ZOOM_SCALE_DELTA;
-                imageView.setScaleX(imageView.getScaleX() * zoomFactor);
-                imageView.setScaleY(imageView.getScaleY() * zoomFactor);
 
-                //TODO: When zooming in, find new "preview" cell size. Apply the factor to cell size. Then recalc the
-                // new image scroll height and expand it
+                double roundedZoomFactor = roundToTwoDecimals(zoomFactor);
+                double roundedScaleX = roundToTwoDecimals(imageView.getScaleX());
+                double roundedScaleY = roundToTwoDecimals(imageView.getScaleY());
+                double newScaleX = roundToTwoDecimals(roundedScaleX * roundedZoomFactor);
+                double newScaleY = roundToTwoDecimals(roundedScaleY * roundedZoomFactor);
+
+                imageView.setScaleX(newScaleX);
+                imageView.setScaleY(newScaleY);
+
+                double roundedImageHeight = roundToTwoDecimals(imgScroll.getHeight());
+                double newImageHeight = roundToTwoDecimals(roundedImageHeight * roundedZoomFactor);
+
+                imgScroll.setMinHeight(newImageHeight);
 
                 event.consume(); // Prevent the ScrollPane from scrolling while zooming
             }
